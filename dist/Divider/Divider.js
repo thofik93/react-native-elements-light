@@ -12,39 +12,43 @@ var __rest = (this && this.__rest) || function (s, e) {
 var _a, _b;
 import React from 'react';
 import { View, StyleSheet, Text, } from 'react-native';
-import { defaultTheme } from '../helpers';
-export const Divider = (_a) => {
-    var { color, inset = false, insetType = 'left', orientation = 'horizontal', style, subHeader, subHeaderStyle, width } = _a, rest = __rest(_a, ["color", "inset", "insetType", "orientation", "style", "subHeader", "subHeaderStyle", "width"]);
-    return (React.createElement(React.Fragment, null,
-        React.createElement(View, Object.assign({ testID: "RNE__Divider", style: StyleSheet.flatten([
-                styles.divider,
-                style,
-                inset &&
-                    (insetType === 'left'
-                        ? styles.leftInset
-                        : insetType === 'right'
-                            ? styles.rightInset
-                            : Object.assign(Object.assign({}, styles.leftInset), styles.rightInset)),
-                orientation === 'vertical' && styles.vertical,
-                width &&
-                    (orientation === 'horizontal'
-                        ? { borderBottomWidth: width }
-                        : { borderRightWidth: width }),
-                color &&
-                    (orientation === 'horizontal'
-                        ? { borderBottomColor: color }
-                        : { borderRightColor: color }),
-            ]) }, rest)),
-        subHeader && orientation === 'horizontal' ? (React.createElement(Text, { style: StyleSheet.flatten([
+import { withTheme } from '../config';
+import Theme from '../config/theme';
+const Divider = (_a) => {
+    var { color, inset = false, insetType = 'left', orientation = 'horizontal', style, subHeader, subHeaderStyle, theme, width } = _a, rest = __rest(_a, ["color", "inset", "insetType", "orientation", "style", "subHeader", "subHeaderStyle", "theme", "width"]);
+    return (<>
+    <View style={StyleSheet.flatten([
+            styles.divider,
+            style,
+            inset &&
+                (insetType === 'left'
+                    ? styles.leftInset
+                    : insetType === 'right'
+                        ? styles.rightInset
+                        : Object.assign(Object.assign({}, styles.leftInset), styles.rightInset)),
+            orientation === 'vertical' && styles.vertical,
+            width &&
+                (orientation === 'horizontal'
+                    ? { borderBottomWidth: width }
+                    : { borderRightWidth: width }),
+            color &&
+                (orientation === 'horizontal'
+                    ? { borderBottomColor: color }
+                    : { borderRightColor: color }),
+        ])} {...rest}/>
+    {subHeader && orientation === 'horizontal' ? (<Text style={StyleSheet.flatten([
                 styles.subHeader,
                 subHeaderStyle,
                 inset && styles.leftInset,
-            ]) }, subHeader)) : null));
+            ])}>
+        {subHeader}
+      </Text>) : null}
+  </>);
 };
 const styles = StyleSheet.create({
     divider: {
         borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: (_a = defaultTheme === null || defaultTheme === void 0 ? void 0 : defaultTheme.colors) === null || _a === void 0 ? void 0 : _a.divider,
+        borderBottomColor: (_a = Theme === null || Theme === void 0 ? void 0 : Theme.colors) === null || _a === void 0 ? void 0 : _a.divider,
     },
     leftInset: {
         marginLeft: 72,
@@ -54,7 +58,7 @@ const styles = StyleSheet.create({
     },
     vertical: {
         borderRightWidth: StyleSheet.hairlineWidth,
-        borderRightColor: (_b = defaultTheme === null || defaultTheme === void 0 ? void 0 : defaultTheme.colors) === null || _b === void 0 ? void 0 : _b.divider,
+        borderRightColor: (_b = Theme === null || Theme === void 0 ? void 0 : Theme.colors) === null || _b === void 0 ? void 0 : _b.divider,
         height: 'auto',
         alignSelf: 'stretch',
     },
@@ -62,4 +66,5 @@ const styles = StyleSheet.create({
         includeFontPadding: false,
     },
 });
-Divider.displayName = 'Divider';
+export { Divider };
+export default withTheme(Divider, 'Divider');

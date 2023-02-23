@@ -10,16 +10,26 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 import React from 'react';
-import { StyleSheet } from 'react-native';
-import { Overlay } from '../Overlay';
-export const DialogBase = (_a) => {
-    var { children, overlayStyle, onBackdropPress, isVisible } = _a, rest = __rest(_a, ["children", "overlayStyle", "onBackdropPress", "isVisible"]);
-    return (React.createElement(Overlay, Object.assign({ isVisible: isVisible, onBackdropPress: onBackdropPress, overlayStyle: StyleSheet.flatten([styles.dialog, overlayStyle]), testID: "Internal__Overlay" }, rest), children));
-};
+import { View, StyleSheet } from 'react-native';
+import Overlay from '../overlay/Overlay';
+import { withTheme } from '../config';
+import DialogLoading from './DialogLoading';
+import DialogTitle from './DialogTitle';
+import DialogButton from './DialogButton';
+import DialogActions from './DialogActions';
+const Dialog = Object.assign((_a) => {
+    var { children, theme, overlayStyle, onBackdropPress, isVisible } = _a, rest = __rest(_a, ["children", "theme", "overlayStyle", "onBackdropPress", "isVisible"]);
+    return (<Overlay isVisible={isVisible} onBackdropPress={onBackdropPress} overlayStyle={StyleSheet.flatten([styles.dialog, overlayStyle])} testID="Internal__Overlay" {...rest}>
+        <View style={styles.childrenContainer}>{children}</View>
+      </Overlay>);
+});
 const styles = StyleSheet.create({
     dialog: {
         width: '75%',
         padding: 20,
+    },
+    childrenContainer: {
+        marginBottom: 5,
     },
     buttonView: {
         marginTop: 10,
@@ -28,4 +38,11 @@ const styles = StyleSheet.create({
         justifyContent: 'flex-start',
     },
 });
-DialogBase.displayName = 'Dialog';
+export { Dialog };
+const ThemedDialog = Object.assign(withTheme(Dialog, 'Dialog'), {
+    Loading: DialogLoading,
+    Title: DialogTitle,
+    Actions: DialogActions,
+    Button: DialogButton,
+});
+export default ThemedDialog;

@@ -1,6 +1,3 @@
-import { LinearProgress as LinearProgressBase, } from './LinearProgress';
-const LinearProgress = Object.assign(LinearProgressBase, {
-    INDETERMINATE: 'indeterminate',
-    DETERMINATE: 'determinate',
-});
-export { LinearProgress };
+import { withTheme } from '../config';
+import LinearProgress from './LinearProgress';
+export default withTheme(LinearProgress, 'LinearProgress');

@@ -9,18 +9,19 @@ const renderNode = (Component, content, defaultProps = {}) => {
     if (typeof content === 'function') {
         return content();
     }
+    // Just in case
     if (content === true) {
-        return React.createElement(Component, Object.assign({}, defaultProps));
+        return <Component {...defaultProps}/>;
     }
     if (typeof content === 'string') {
         if (content.length === 0) {
             return null;
         }
-        return React.createElement(Component, Object.assign({}, defaultProps), content);
+        return <Component {...defaultProps}>{content}</Component>;
     }
     if (typeof content === 'number') {
-        return React.createElement(Component, Object.assign({}, defaultProps), content);
+        return <Component {...defaultProps}>{content}</Component>;
     }
-    return React.createElement(Component, Object.assign({}, defaultProps, content));
+    return <Component {...defaultProps} {...content}/>;
 };
 export default renderNode;

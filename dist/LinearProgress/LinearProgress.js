@@ -12,61 +12,58 @@ var __rest = (this && this.__rest) || function (s, e) {
 import React from 'react';
 import { View, Animated, Platform, } from 'react-native';
 import Color from 'color';
-import { defaultTheme } from '../helpers';
-export const LinearProgress = (_a) => {
+const LinearProgress = (_a) => {
     var _b, _c;
-    var { value, variant = value === undefined ? 'indeterminate' : 'determinate', color = 'secondary', style, theme = defaultTheme, trackColor, animation = { duration: 2000 } } = _a, rest = __rest(_a, ["value", "variant", "color", "style", "theme", "trackColor", "animation"]);
+    var { value = 0, variant = 'indeterminate', color = 'secondary', style, theme, trackColor } = _a, props = __rest(_a, ["value", "variant", "color", "style", "theme", "trackColor"]);
     const [width, setWidth] = React.useState(0);
-    const { current: transition } = React.useRef(new Animated.Value(0));
+    const { current: animation } = React.useRef(new Animated.Value(0));
     const intermediate = React.useRef();
     const startAnimation = React.useCallback(() => {
         if (variant === 'indeterminate') {
-            intermediate.current = Animated.timing(transition, {
-                duration: typeof animation !== 'boolean' ? animation.duration : 2000,
+            intermediate.current = Animated.timing(animation, {
+                duration: 2000,
                 toValue: 1,
                 useNativeDriver: true,
                 isInteraction: false,
             });
-            transition.setValue(0);
+            animation.setValue(0);
             Animated.loop(intermediate.current).start();
         }
         else {
-            Animated.timing(transition, {
-                duration: typeof animation !== 'boolean' ? animation.duration : 1000,
+            Animated.timing(animation, {
+                duration: 1000,
                 toValue: value || 0,
                 useNativeDriver: Platform.OS !== 'web',
                 isInteraction: false,
             }).start();
         }
-    }, [variant, transition, animation, value]);
+    }, [animation, variant, value]);
     const tintColor = color === 'secondary' || color === 'primary'
         ? (_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b[color]
         : Color(color).rgb().string() || ((_c = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _c === void 0 ? void 0 : _c.secondary);
     const trackTintColor = trackColor || Color(tintColor).alpha(0.4).rgb().string();
     React.useEffect(() => {
-        if (animation) {
-            startAnimation();
-        }
-    }, [animation, startAnimation]);
-    return (React.createElement(View, Object.assign({ testID: "RNE__LinearProgress_Bar", accessible: true, accessibilityRole: "progressbar", accessibilityValue: {
-            now: clamp(value),
+        startAnimation();
+    }, [startAnimation, value]);
+    return (<View accessible accessibilityRole="progressbar" accessibilityValue={{
+            now: value,
             min: 0,
             max: 1,
-        } }, rest, { onLayout: (e) => {
+        }} {...props} onLayout={(e) => {
             setWidth(e.nativeEvent.layout.width);
-        }, style: [
+        }} style={[
             {
                 height: 4,
                 overflow: 'hidden',
                 width: '100%',
                 backgroundColor: trackTintColor,
-                position: 'relative',
             },
             style,
-        ] }), animation ? (React.createElement(Animated.View, { testID: "RNE__LinearProgress_Progress", style: {
+        ]}>
+      <Animated.View style={{
             transform: [
                 {
-                    translateX: transition.interpolate(variant === 'indeterminate'
+                    translateX: animation.interpolate(variant === 'indeterminate'
                         ? {
                             inputRange: [0, 1],
                             outputRange: [-width, 0.5 * width],
@@ -77,7 +74,7 @@ export const LinearProgress = (_a) => {
                         }),
                 },
                 {
-                    scaleX: transition.interpolate(variant === 'indeterminate'
+                    scaleX: animation.interpolate(variant === 'indeterminate'
                         ? {
                             inputRange: [0, 0.5, 1],
                             outputRange: [0.0001, 1, 0.001],
@@ -90,11 +87,7 @@ export const LinearProgress = (_a) => {
             ],
             backgroundColor: tintColor,
             flex: 1,
-        } })) : (React.createElement(View, { testID: "RNE__LinearProgress_Progress", style: {
-            flex: 1,
-            width: width * clamp(value || 0),
-            backgroundColor: tintColor,
-        } }))));
+        }}/>
+    </View>);
 };
-LinearProgress.displayName = 'LinearProgress';
-export const clamp = (value) => Math.max(0, Math.min(value, 1)) || 0;
+export default LinearProgress;

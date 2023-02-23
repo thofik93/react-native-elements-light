@@ -1,33 +1,27 @@
-export * from './AirbnbRating';
-export * from './Avatar';
-export * from './Badge';
-export * from './BottomSheet';
-export * from './Button';
-export * from './ButtonGroup';
-export * from './Card';
-export * from './CheckBox';
-export * from './Chip';
-export * from './Dialog';
-export * from './Divider';
-export * from './FAB';
-export * from './Header';
-export * from './Icon';
-export * from './Image';
-export * from './Input';
-export * from './LinearProgress';
-export * from './ListItem';
-export * from './Overlay';
-export * from './PricingCard';
-export * from './Rating';
-export * from './SearchBar';
-export * from './Skeleton';
-export * from './Slider';
-export * from './SocialIcon';
-export * from './SpeedDial';
-export * from './Switch';
-export * from './Tab';
-export * from './TabView';
-export * from './Text';
-export * from './Tile';
-export * from './Tooltip';
-export * from './helpers';
+// UI references
+// https://ionicframework.com/docs/components/#buttons
+// https://material.io/guidelines/components/buttons.html#buttons-raised-buttons
+// https://material.angularjs.org/latest/demo/button
+// Core
+import Button from './buttons/Button';
+import Chip from './buttons/Chip';
+import Input from './input/Input';
+import Overlay from './overlay/Overlay';
+// Utilities
+import Badge from './badge/Badge';
+import withBadge from './badge/withBadge';
+import CheckBox from './checkbox/CheckBox';
+import Divider from './divider/Divider';
+// Productivity
+import Card from './card/Card';
+import Dialog from './dialog/Dialog';
+import Header from './header/Header';
+import Tooltip from './tooltip/Tooltip';
+import BottomSheet from './bottomSheet/BottomSheet';
+import LinearProgress from './linearProgress';
+import Tab from './tab/Tab';
+import TabView from './tab/TabView';
+// helpers
+import { colors, ThemeProvider, ThemeConsumer, ThemeContext, withTheme, makeStyles, useTheme, } from './config';
+import normalize from './helpers/normalizeText';
+export { Badge, BottomSheet, Button, Card, Chip, Input, LinearProgress, Tooltip, Divider, Dialog, CheckBox, colors, normalize, Header, Overlay, ThemeProvider, ThemeConsumer, ThemeContext, withBadge, withTheme, useTheme, makeStyles, Tab, TabView, };

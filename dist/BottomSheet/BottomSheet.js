@@ -10,18 +10,21 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 import React from 'react';
-import { Modal, View, StyleSheet, Pressable, ScrollView, } from 'react-native';
+import { Modal, View, StyleSheet, ScrollView, } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-export const BottomSheet = (_a) => {
-    var { containerStyle, backdropStyle, onBackdropPress = () => null, isVisible = false, modalProps = {}, children, scrollViewProps = {} } = _a, rest = __rest(_a, ["containerStyle", "backdropStyle", "onBackdropPress", "isVisible", "modalProps", "children", "scrollViewProps"]);
-    return (React.createElement(Modal, Object.assign({ animationType: "slide", onRequestClose: onBackdropPress, transparent: true, visible: isVisible }, modalProps),
-        React.createElement(Pressable, { onPress: onBackdropPress, style: [StyleSheet.absoluteFill, backdropStyle], testID: "RNE__Overlay__backdrop" }),
-        React.createElement(SafeAreaView, Object.assign({ style: StyleSheet.flatten([
-                styles.safeAreaView,
-                containerStyle && containerStyle,
-            ]), pointerEvents: "box-none" }, rest),
-            React.createElement(View, null,
-                React.createElement(ScrollView, Object.assign({}, scrollViewProps), children)))));
+import { withTheme } from '../config';
+const BottomSheet = (_a) => {
+    var { containerStyle, isVisible = false, modalProps = {}, children } = _a, props = __rest(_a, ["containerStyle", "isVisible", "modalProps", "children"]);
+    return (<Modal animationType="slide" transparent={true} visible={isVisible} {...modalProps}>
+      <SafeAreaView style={StyleSheet.flatten([
+            styles.safeAreaView,
+            containerStyle && containerStyle,
+        ])} {...props}>
+        <View>
+          <ScrollView>{children}</ScrollView>
+        </View>
+      </SafeAreaView>
+    </Modal>);
 };
 const styles = StyleSheet.create({
     safeAreaView: {
@@ -29,5 +32,7 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.2)',
         flexDirection: 'column-reverse',
     },
+    listContainer: { backgroundColor: 'white' },
 });
-BottomSheet.displayName = 'BottomSheet';
+export { BottomSheet };
+export default withTheme(BottomSheet, 'BottomSheet');

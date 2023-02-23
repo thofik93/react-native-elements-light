@@ -10,33 +10,32 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 import React from 'react';
-import { StyleSheet, Text, View, Pressable, } from 'react-native';
-import { defaultTheme, renderNode, } from '../helpers';
-export const Badge = (_a) => {
-    var _b;
-    var { containerStyle, textStyle, textProps, badgeStyle, onPress, onLongPress, onPressOut, onPressIn, Component = onPress || onLongPress || onPressIn || onPressOut
-        ? Pressable
-        : View, value, theme = defaultTheme, status = 'primary', pressableProps } = _a, rest = __rest(_a, ["containerStyle", "textStyle", "textProps", "badgeStyle", "onPress", "onLongPress", "onPressOut", "onPressIn", "Component", "value", "theme", "status", "pressableProps"]);
+import { StyleSheet, Text, View, TouchableOpacity, } from 'react-native';
+import { withTheme } from '../config';
+import { renderNode } from '../helpers';
+const Badge = (props) => {
+    var _a;
+    const { containerStyle, textStyle, textProps, badgeStyle, onPress, Component = onPress ? TouchableOpacity : View, value, theme, status = 'primary' } = props, attributes = __rest(props, ["containerStyle", "textStyle", "textProps", "badgeStyle", "onPress", "Component", "value", "theme", "status"]);
     const element = renderNode(Text, value, Object.assign({ style: StyleSheet.flatten([styles.text, textStyle && textStyle]) }, textProps));
-    return (React.createElement(View, { testID: "RNE__Badge__Container", style: StyleSheet.flatten([containerStyle && containerStyle]) },
-        React.createElement(Component, Object.assign({}, Object.assign(Object.assign({ onPress,
-            onLongPress,
-            onPressOut,
-            onPressIn }, pressableProps), rest), { testID: "RNE__Badge", style: StyleSheet.flatten([
-                {
-                    alignSelf: 'center',
-                    minWidth: size,
-                    height: size,
-                    borderRadius: size / 2,
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    backgroundColor: (_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b[status],
-                    borderWidth: StyleSheet.hairlineWidth,
-                    borderColor: '#fff',
-                },
-                !element && styles.miniBadge,
-                badgeStyle && badgeStyle,
-            ]) }), element)));
+    return (<View style={StyleSheet.flatten([containerStyle && containerStyle])}>
+      <Component {...attributes} style={StyleSheet.flatten([
+            {
+                alignSelf: 'center',
+                minWidth: size,
+                height: size,
+                borderRadius: size / 2,
+                alignItems: 'center',
+                justifyContent: 'center',
+                backgroundColor: (_a = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _a === void 0 ? void 0 : _a[status],
+                borderWidth: StyleSheet.hairlineWidth,
+                borderColor: '#fff',
+            },
+            !element && styles.miniBadge,
+            badgeStyle && badgeStyle,
+        ])} onPress={onPress}>
+        {element}
+      </Component>
+    </View>);
 };
 const size = 18;
 const miniSize = 8;
@@ -54,4 +53,5 @@ const styles = StyleSheet.create({
         paddingHorizontal: 4,
     },
 });
-Badge.displayName = 'Badge';
+export { Badge };
+export default withTheme(Badge, 'Badge');

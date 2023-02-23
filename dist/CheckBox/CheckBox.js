@@ -10,56 +10,47 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 import React from 'react';
-import { StyleSheet, Pressable, View, Platform, } from 'react-native';
-import { Text as TextElement } from '../Text';
-import { CheckBoxIcon } from './components/CheckBoxIcon';
-import { fonts } from '../helpers';
-import { color, defaultTheme } from '../helpers';
-export const CheckBox = (_a) => {
-    var _b, _c, _d;
-    var { checked = false, Component = Pressable, iconRight = false, title, titleProps = {}, center = false, right = false, containerStyle, wrapperStyle, textStyle, checkedTitle, fontFamily, theme = defaultTheme, onPress, onLongPress, disabled = false, disabledStyle, disabledTitleStyle, checkedColor = (_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b.primary } = _a, rest = __rest(_a, ["checked", "Component", "iconRight", "title", "titleProps", "center", "right", "containerStyle", "wrapperStyle", "textStyle", "checkedTitle", "fontFamily", "theme", "onPress", "onLongPress", "disabled", "disabledStyle", "disabledTitleStyle", "checkedColor"]);
+import { StyleSheet, TouchableOpacity, View, Platform, Text, } from 'react-native';
+import { fonts, withTheme } from '../config';
+const CheckBox = (props) => {
+    var _a, _b;
+    const { theme } = props, rest = __rest(props, ["theme"]);
+    const { Component = TouchableOpacity, checked = false, iconRight = false, title, titleProps = {}, center = false, right = false, containerStyle, textStyle, wrapperStyle, onPress, onLongPress, checkedTitle, fontFamily, checkedColor = (_a = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _a === void 0 ? void 0 : _a.primary } = rest, attributes = __rest(rest, ["Component", "checked", "iconRight", "title", "titleProps", "center", "right", "containerStyle", "textStyle", "wrapperStyle", "onPress", "onLongPress", "checkedTitle", "fontFamily", "checkedColor"]);
     const accessibilityState = {
         checked: !!checked,
     };
-    const iconProps = Object.assign({ checked,
-        onLongPress,
-        checkedColor }, rest);
-    return (React.createElement(Component, Object.assign({ accessibilityRole: "checkbox", accessibilityState: accessibilityState, testID: "RNE__CheckBox__Wrapper" }, rest, { disabled: disabled, onLongPress: onLongPress, onPress: onPress, style: StyleSheet.flatten([
-            {
-                backgroundColor: theme.colors.background,
-                borderColor: theme.colors.white,
-            },
-            styles.container,
-            containerStyle && containerStyle,
-            disabled && disabledStyle,
-        ]) }),
-        React.createElement(View, { style: StyleSheet.flatten([
-                styles.wrapper,
-                right && { justifyContent: 'flex-end' },
-                center && { justifyContent: 'center' },
-                wrapperStyle && wrapperStyle,
-            ]) },
-            !iconRight && (React.createElement(CheckBoxIcon, Object.assign({}, iconProps, { checkedColor: checkedColor }))),
-            React.isValidElement(title)
+    return (<Component accessibilityRole="checkbox" accessibilityState={accessibilityState} testID="checkbox" {...attributes} onLongPress={onLongPress} onPress={onPress} style={StyleSheet.flatten([
+        styles.container,
+        title && styles.containerHasTitle,
+        containerStyle && containerStyle,
+    ])}>
+        <View style={StyleSheet.flatten([
+            styles.wrapper,
+            right && { justifyContent: 'flex-end' },
+            center && { justifyContent: 'center' },
+            wrapperStyle && wrapperStyle,
+        ])}>
+            {!iconRight && <></>}
+
+            {React.isValidElement(title)
                 ? title
                 : title !== '' &&
-                    title && (React.createElement(TextElement, Object.assign({ testID: "RNE__CheckBox__Title", style: StyleSheet.flatten([
-                        Object.assign({ marginLeft: 10, marginRight: 10, color: (_c = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _c === void 0 ? void 0 : _c.grey1 }, Platform.select({
-                            android: Object.assign({}, fonts.android.bold),
-                            default: {
-                                fontWeight: 'bold',
-                            },
-                        })),
-                        textStyle && textStyle,
-                        fontFamily && { fontFamily },
-                        disabled && {
-                            color: color((_d = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _d === void 0 ? void 0 : _d.disabled)
-                                .darken(0.3)
-                                .string(),
+                title && (<Text testID="checkboxTitle" style={StyleSheet.flatten([
+                    Object.assign({ marginLeft: 10, marginRight: 10, color: (_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b.grey1 }, Platform.select({
+                        android: Object.assign({}, fonts.android.bold),
+                        default: {
+                            fontWeight: 'bold',
                         },
-                        disabled && disabledTitleStyle,
-                    ]) }, titleProps), checked ? checkedTitle || title : title)),
-            iconRight && (React.createElement(CheckBoxIcon, Object.assign({}, iconProps, { checkedColor: checkedColor }))))));
+                    })),
+                    textStyle && textStyle,
+                    fontFamily && { fontFamily },
+                ])} {...titleProps}>
+                    {checked ? checkedTitle || title : title}
+                </Text>)}
+
+            {iconRight && <></>}
+        </View>
+    </Component>);
 };
 const styles = StyleSheet.create({
     wrapper: {
@@ -79,4 +70,5 @@ const styles = StyleSheet.create({
         borderColor: '#ededed',
     },
 });
-CheckBox.displayName = 'CheckBox';
+export { CheckBox };
+export default withTheme(CheckBox, 'CheckBox');

@@ -10,26 +10,30 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 import React from 'react';
-import { View, StyleSheet, Platform, Pressable, Modal, KeyboardAvoidingView, } from 'react-native';
-import Color from 'color';
-import { getBehaviorType, } from '../helpers';
-export const Overlay = (_a) => {
-    var _b;
-    var { children, backdropStyle, overlayStyle, onBackdropPress = () => null, fullScreen = false, ModalComponent = Modal, isVisible, pressableProps, onPressOut, onPressIn, onLongPress, theme } = _a, rest = __rest(_a, ["children", "backdropStyle", "overlayStyle", "onBackdropPress", "fullScreen", "ModalComponent", "isVisible", "pressableProps", "onPressOut", "onPressIn", "onLongPress", "theme"]);
-    return (React.createElement(ModalComponent, Object.assign({ visible: isVisible, onRequestClose: onBackdropPress, transparent: true }, rest),
-        React.createElement(Pressable, Object.assign({ style: StyleSheet.flatten([styles.backdrop, backdropStyle]), onPress: onBackdropPress, testID: "RNE__Overlay__backdrop" }, pressableProps, { onPressOut, onPressIn, onLongPress })),
-        React.createElement(KeyboardAvoidingView, { testID: "RNE__Overlay__Container", style: styles.container, pointerEvents: "box-none", behavior: getBehaviorType },
-            React.createElement(View, { testID: "RNE__Overlay", style: StyleSheet.flatten([
-                    styles.overlay,
-                    fullScreen && styles.fullscreen,
-                    {
-                        backgroundColor: Color((_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b.white)
-                            .lighten(10)
-                            .rgb()
-                            .toString(),
-                    },
-                    overlayStyle,
-                ]) }, children))));
+import { View, StyleSheet, Platform, TouchableWithoutFeedback, Modal, } from 'react-native';
+import { withTheme } from '../config';
+const Overlay = (_a) => {
+    var { children, backdropStyle, overlayStyle, onBackdropPress, fullScreen, ModalComponent = Modal, isVisible } = _a, rest = __rest(_a, ["children", "backdropStyle", "overlayStyle", "onBackdropPress", "fullScreen", "ModalComponent", "isVisible"]);
+    return (<ModalComponent visible={isVisible} onRequestClose={onBackdropPress} transparent {...rest}>
+    <TouchableWithoutFeedback onPress={onBackdropPress} testID="RNE__Overlay__backdrop">
+      <View testID="backdrop" style={StyleSheet.flatten([styles.backdrop, backdropStyle])}/>
+    </TouchableWithoutFeedback>
+
+    <View style={styles.container} pointerEvents="box-none">
+      <View style={StyleSheet.flatten([
+            styles.overlay,
+            fullScreen && styles.fullscreen,
+            overlayStyle,
+        ])}>
+        {children}
+      </View>
+    </View>
+  </ModalComponent>);
+};
+Overlay.defaultProps = {
+    fullScreen: false,
+    onBackdropPress: () => null,
+    ModalComponent: Modal,
 };
 const styles = StyleSheet.create({
     backdrop: {
@@ -62,4 +66,5 @@ const styles = StyleSheet.create({
         },
     })),
 });
-Overlay.displayName = 'Overlay';
+export { Overlay };
+export default withTheme(Overlay, 'Overlay');

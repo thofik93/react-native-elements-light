@@ -11,12 +11,17 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import React from 'react';
 import { View, Platform, StyleSheet } from 'react-native';
-import { defaultTheme } from '../helpers';
-export const CardBase = (_a) => {
-    var _b, _c;
-    var { children, containerStyle, wrapperStyle, theme = defaultTheme } = _a, rest = __rest(_a, ["children", "containerStyle", "wrapperStyle", "theme"]);
-    return (React.createElement(View, Object.assign({}, rest, { style: StyleSheet.flatten([
-            Object.assign({ backgroundColor: (_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b.white, borderWidth: 1, padding: 15, margin: 15, marginBottom: 0, borderColor: (_c = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _c === void 0 ? void 0 : _c.grey5 }, Platform.select({
+import { withTheme } from '../config';
+import CardTitle from './CardTitle';
+import CardDivider from './CardDivider';
+import CardImage from './CardImage';
+import CardFeaturedTitle from './CardFeaturedTitle';
+import CardFeaturedSubtitle from './CardFeaturedSubtitle';
+const Card = (props) => {
+    var _a, _b;
+    const { children, containerStyle, wrapperStyle, theme } = props, attributes = __rest(props, ["children", "containerStyle", "wrapperStyle", "theme"]);
+    return (<View {...attributes} style={StyleSheet.flatten([
+            Object.assign({ backgroundColor: (_a = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _a === void 0 ? void 0 : _a.white, borderWidth: 1, padding: 15, margin: 15, marginBottom: 0, borderColor: (_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b.grey5 }, Platform.select({
                 android: {
                     elevation: 1,
                 },
@@ -28,15 +33,26 @@ export const CardBase = (_a) => {
                 },
             })),
             containerStyle && containerStyle,
-        ]) }),
-        React.createElement(View, { style: StyleSheet.flatten([
-                styles.wrapper,
-                wrapperStyle && wrapperStyle,
-            ]) }, children)));
+        ])}>
+      <View style={StyleSheet.flatten([
+            styles.wrapper,
+            wrapperStyle && wrapperStyle,
+        ])}>
+        {children}
+      </View>
+    </View>);
 };
 const styles = StyleSheet.create({
     wrapper: {
         backgroundColor: 'transparent',
     },
 });
-CardBase.displayName = 'Card';
+export { Card };
+const ThemedCard = Object.assign(withTheme(Card, 'Card'), {
+    Divider: CardDivider,
+    Image: CardImage,
+    Title: CardTitle,
+    FeaturedTitle: CardFeaturedTitle,
+    FeaturedSubtitle: CardFeaturedSubtitle,
+});
+export default ThemedCard;

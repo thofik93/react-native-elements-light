@@ -11,8 +11,8 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Badge } from './Badge';
-export const withBadge = (value, options = {}) => (WrappedComponent) => {
+import Badge from './Badge';
+const withBadge = (value, options = {}) => (WrappedComponent) => {
     const WithBadge = (props) => {
         const { bottom, hidden = false, left, containerStyle } = options, badgeProps = __rest(options, ["bottom", "hidden", "left", "containerStyle"]);
         let { right = -16, top = -1 } = options;
@@ -21,12 +21,14 @@ export const withBadge = (value, options = {}) => (WrappedComponent) => {
             top = 3;
         }
         const badgeValue = typeof value === 'function' ? value(props) : value;
-        return (React.createElement(View, { style: StyleSheet.flatten([styles.container, containerStyle]) },
-            React.createElement(WrappedComponent, Object.assign({}, props)),
-            !hidden && (React.createElement(Badge, Object.assign({ value: badgeValue, status: "error", containerStyle: StyleSheet.flatten([
+        return (<View style={StyleSheet.flatten([styles.container, containerStyle])}>
+        <WrappedComponent {...props}/>
+
+        {!hidden && (<Badge value={badgeValue} status="error" containerStyle={StyleSheet.flatten([
                     styles.badgeContainer,
                     { bottom, left, right, top },
-                ]) }, badgeProps)))));
+                ])} {...badgeProps}/>)}
+      </View>);
     };
     WithBadge.displayName = `WithBadge(${WrappedComponent.displayName || WrappedComponent.name || 'Component'})`;
     return WithBadge;
@@ -41,3 +43,4 @@ const styles = StyleSheet.create({
         position: 'relative',
     },
 });
+export default withBadge;

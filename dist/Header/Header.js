@@ -10,58 +10,88 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 import React from 'react';
-import { Platform, StatusBar, StyleSheet, View, ImageBackground, } from 'react-native';
+import { Platform, StatusBar, StyleSheet, View, ImageBackground, Text, } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { defaultTheme } from '../helpers';
-import { Children } from './components/HeaderChildren';
-export const Header = (_a) => {
-    var _b, _c;
-    var { statusBarProps, leftComponent, centerComponent, rightComponent, leftContainerStyle, centerContainerStyle, rightContainerStyle, backgroundColor, backgroundImage, backgroundImageStyle, containerStyle, placement = 'center', barStyle, children = [], linearGradientProps, ViewComponent = linearGradientProps || !backgroundImage
-        ? View
-        : ImageBackground, theme = defaultTheme, elevated, edges = ['left', 'top', 'right'] } = _a, rest = __rest(_a, ["statusBarProps", "leftComponent", "centerComponent", "rightComponent", "leftContainerStyle", "centerContainerStyle", "rightContainerStyle", "backgroundColor", "backgroundImage", "backgroundImageStyle", "containerStyle", "placement", "barStyle", "children", "linearGradientProps", "ViewComponent", "theme", "elevated", "edges"]);
+import { withTheme } from '../config';
+import { renderNode } from '../helpers';
+const ALIGN_STYLE = {
+    left: 'flex-start',
+    right: 'flex-end',
+    center: 'center',
+};
+const Children = ({ style, placement, children }) => (<View style={StyleSheet.flatten([{ alignItems: ALIGN_STYLE[placement] }, style])}>
+    {children == null || children === false
+        ? null
+        : children.text
+            ? renderNode(Text, children.text, Object.assign({ numberOfLines: 1 }, children))
+            : children.icon
+                ? renderNode(<></>, Object.assign(Object.assign({}, children), {
+                    name: children.icon, containerStyle: StyleSheet.flatten([
+                        { alignItems: ALIGN_STYLE[placement] },
+                        children.containerStyle,
+                    ])
+                }))
+                : renderNode(Text, children)}
+</View>);
+const Header = (props) => {
+    var _a, _b;
     React.useEffect(() => {
+        const { linearGradientProps, ViewComponent } = props;
         if (linearGradientProps && !ViewComponent) {
-            console.warn("You need to pass a ViewComponent to use linearGradientProps !\nExample: ViewComponent={require('react-native-linear-gradient')}");
+            console.error("You need to pass a ViewComponent to use linearGradientProps !\nExample: ViewComponent={require('react-native-linear-gradient')}");
         }
     });
-    return (React.createElement(React.Fragment, null,
-        React.createElement(StatusBar, Object.assign({ barStyle: barStyle, translucent: true, backgroundColor: backgroundColor || ((_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b.primary) }, statusBarProps)),
-        React.createElement(ViewComponent, Object.assign({ testID: "headerContainer" }, rest, { style: StyleSheet.flatten([
-                {
-                    borderBottomColor: '#f2f2f2',
-                    borderBottomWidth: StyleSheet.hairlineWidth,
-                    paddingHorizontal: 10,
-                    paddingVertical: 10,
-                    backgroundColor: (_c = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _c === void 0 ? void 0 : _c.primary,
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                },
-                backgroundColor && { backgroundColor },
-                elevated && styles.elevatedHeader,
-                containerStyle,
-            ]), source: backgroundImage, imageStyle: backgroundImageStyle }, linearGradientProps),
-            React.createElement(SafeAreaView, { edges: edges, style: styles.headerSafeView },
-                React.createElement(Children, { style: StyleSheet.flatten([
-                        placement === 'center' && styles.rightLeftContainer,
-                        leftContainerStyle,
-                    ]), placement: "left" }, (React.isValidElement(children) && children) ||
-                    children[0] ||
-                    leftComponent),
-                React.createElement(Children, { style: StyleSheet.flatten([
-                        styles.centerContainer,
-                        placement !== 'center' && {
-                            paddingHorizontal: Platform.select({
-                                android: 16,
-                                default: 15,
-                            }),
-                        },
-                        centerContainerStyle,
-                    ]), placement: placement }, children[1] || centerComponent),
-                React.createElement(Children, { style: StyleSheet.flatten([
-                        placement === 'center' && styles.rightLeftContainer,
-                        rightContainerStyle,
-                    ]), placement: "right" }, children[2] || rightComponent)))));
+    const { statusBarProps, leftComponent, centerComponent, rightComponent, leftContainerStyle, centerContainerStyle, rightContainerStyle, backgroundColor, backgroundImage, backgroundImageStyle, containerStyle, placement = 'center', barStyle, children = [], linearGradientProps, ViewComponent = linearGradientProps || !backgroundImage
+        ? View
+        : ImageBackground, theme, elevated } = props, attributes = __rest(props, ["statusBarProps", "leftComponent", "centerComponent", "rightComponent", "leftContainerStyle", "centerContainerStyle", "rightContainerStyle", "backgroundColor", "backgroundImage", "backgroundImageStyle", "containerStyle", "placement", "barStyle", "children", "linearGradientProps", "ViewComponent", "theme", "elevated"]);
+    return (<>
+        <StatusBar barStyle={barStyle} translucent={true} backgroundColor={backgroundColor || ((_a = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _a === void 0 ? void 0 : _a.primary)} {...statusBarProps} />
+        <ViewComponent testID="headerContainer" {...attributes} style={StyleSheet.flatten([
+            {
+                borderBottomColor: '#f2f2f2',
+                borderBottomWidth: StyleSheet.hairlineWidth,
+                paddingHorizontal: 10,
+                paddingVertical: 10,
+                backgroundColor: (_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b.primary,
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+            },
+            backgroundColor && { backgroundColor },
+            elevated && styles.elevatedHeader,
+            containerStyle,
+        ])} source={backgroundImage} imageStyle={backgroundImageStyle} {...linearGradientProps}>
+            <SafeAreaView edges={['left', 'top', 'right']} style={styles.headerSafeView}>
+                <Children style={StyleSheet.flatten([
+                    placement === 'center' && styles.rightLeftContainer,
+                    leftContainerStyle,
+                ])} placement="left">
+                    {(React.isValidElement(children) && children) ||
+                        children[0] ||
+                        leftComponent}
+                </Children>
+                <Children style={StyleSheet.flatten([
+                    styles.centerContainer,
+                    placement !== 'center' && {
+                        paddingHorizontal: Platform.select({
+                            android: 16,
+                            default: 15,
+                        }),
+                    },
+                    centerContainerStyle,
+                ])} placement={placement}>
+                    {children[1] || centerComponent}
+                </Children>
+
+                <Children style={StyleSheet.flatten([
+                    placement === 'center' && styles.rightLeftContainer,
+                    rightContainerStyle,
+                ])} placement="right">
+                    {children[2] || rightComponent}
+                </Children>
+            </SafeAreaView>
+        </ViewComponent>
+    </>);
 };
 const styles = StyleSheet.create({
     headerSafeView: {
@@ -85,4 +115,5 @@ const styles = StyleSheet.create({
         elevation: 24,
     },
 });
-Header.displayName = 'Header';
+export { Header };
+export default withTheme(Header, 'Header');

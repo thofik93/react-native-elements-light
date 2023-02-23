@@ -10,124 +10,98 @@ var __rest = (this && this.__rest) || function (s, e) {
     return t;
 };
 import React from 'react';
-import { View, Animated, StyleSheet, ScrollView, } from 'react-native';
-import { defaultTheme } from '../helpers';
-export const TabBase = (_a) => {
+import { View, Animated, StyleSheet, } from 'react-native';
+import Button from '../buttons/Button';
+import { withTheme } from '../config';
+import Color from 'color';
+const TabItem = (_a) => {
     var _b, _c;
-    var { theme = defaultTheme, children, value = 0, scrollable = false, onChange = () => { }, indicatorStyle, disableIndicator, variant = 'default', style, dense, iconPosition, buttonStyle, titleStyle, containerStyle } = _a, rest = __rest(_a, ["theme", "children", "value", "scrollable", "onChange", "indicatorStyle", "disableIndicator", "variant", "style", "dense", "iconPosition", "buttonStyle", "titleStyle", "containerStyle"]);
-    const animationRef = React.useRef(new Animated.Value(0));
-    const scrollViewRef = React.useRef(null);
-    const scrollViewPosition = React.useRef(0);
-    const validChildren = React.useMemo(() => React.Children.toArray(children), [children]);
-    const tabItemPositions = React.useRef([]);
-    const [tabContainerWidth, setTabContainerWidth] = React.useState(0);
-    const scrollHandler = React.useCallback((currValue) => {
-        if (tabItemPositions.current.length > currValue) {
-            let itemStartPosition = currValue === 0
-                ? 0
-                : tabItemPositions.current[currValue - 1].position;
-            let itemEndPosition = tabItemPositions.current[currValue].position;
-            const scrollCurrentPosition = scrollViewPosition.current;
-            const tabContainerCurrentWidth = tabContainerWidth;
-            let scrollX = scrollCurrentPosition;
-            if (itemStartPosition < scrollCurrentPosition) {
-                scrollX += itemStartPosition - scrollCurrentPosition;
-            }
-            else if (scrollCurrentPosition + tabContainerCurrentWidth <
-                itemEndPosition) {
-                scrollX +=
-                    itemEndPosition -
-                        (scrollCurrentPosition + tabContainerCurrentWidth);
-            }
-            scrollViewRef.current.scrollTo({
-                x: scrollX,
-                y: 0,
-                animated: true,
-            });
-        }
-    }, [tabContainerWidth]);
+    var { active, theme, titleStyle, containerStyle, buttonStyle, variant, iconPosition = 'top', title } = _a, props = __rest(_a, ["active", "theme", "titleStyle", "containerStyle", "buttonStyle", "variant", "iconPosition", "title"]);
+    return (<Button accessibilityRole="tab" accessibilityState={{ selected: active }} accessibilityValue={typeof title === 'string' ? { text: title } : undefined} buttonStyle={[styles.buttonStyle, buttonStyle]} titleStyle={[
+            styles.titleStyle,
+            {
+                color: variant === 'primary' ? 'white' : (_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b.secondary,
+                paddingVertical: !props.icon ? 8 : 2,
+            },
+            titleStyle,
+        ]} containerStyle={[
+            styles.containerStyle,
+            {
+                backgroundColor: active
+                    ? Color((_c = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _c === void 0 ? void 0 : _c.secondary).alpha(0.2).rgb().toString()
+                    : 'transparent',
+            },
+            containerStyle,
+        ]} iconPosition={iconPosition} title={title} {...props}/>);
+};
+const TabContainer = (_a) => {
+    var _b, _c;
+    var { theme, children, value, onChange = () => { }, indicatorStyle, disableIndicator, variant } = _a, props = __rest(_a, ["theme", "children", "value", "onChange", "indicatorStyle", "disableIndicator", "variant"]);
+    const [dim, setDim] = React.useState({ width: 0 });
+    const { current: animation } = React.useRef(new Animated.Value(0));
     React.useEffect(() => {
-        Animated.timing(animationRef.current, {
+        Animated.timing(animation, {
             toValue: value,
             useNativeDriver: true,
             duration: 170,
         }).start();
-        scrollable && requestAnimationFrame(() => scrollHandler(value));
-    }, [animationRef, scrollHandler, value, scrollable]);
-    const onScrollHandler = React.useCallback((event) => {
-        scrollViewPosition.current = event.nativeEvent.contentOffset.x;
-    }, []);
-    const indicatorTransitionInterpolate = React.useMemo(() => {
-        const countItems = validChildren.length;
-        if (countItems < 2 || !tabItemPositions.current.length) {
-            return 0;
-        }
-        const inputRange = Array.from(Array(countItems + 1).keys());
-        const outputRange = tabItemPositions.current.map(({ position }) => position);
-        if (inputRange.length - 1 !== outputRange.length) {
-            return 0;
-        }
-        return animationRef.current.interpolate({
-            inputRange,
-            outputRange: [0, ...outputRange],
-        });
-    }, [animationRef, validChildren, tabItemPositions.current.length]);
-    const WIDTH = React.useMemo(() => {
-        var _a;
-        return (_a = tabItemPositions.current[value]) === null || _a === void 0 ? void 0 : _a.width;
-    }, [value, tabItemPositions.current.length]);
-    return (React.createElement(View, Object.assign({}, rest, { accessibilityRole: "tablist", style: [
+    }, [animation, value]);
+    const WIDTH = dim.width / React.Children.count(children);
+    return (<>
+      <View {...props} accessibilityRole="tablist" style={[
+            styles.viewStyle,
             variant === 'primary' && {
                 backgroundColor: (_b = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _b === void 0 ? void 0 : _b.primary,
             },
-            styles.viewStyle,
-            style,
-        ], onLayout: ({ nativeEvent: { layout } }) => {
-            setTabContainerWidth(layout.width);
-        } }), React.createElement(scrollable ? ScrollView : React.Fragment, Object.assign(Object.assign({}, (scrollable && {
-        horizontal: true,
-        ref: scrollViewRef,
-        onScroll: onScrollHandler,
-        showsHorizontalScrollIndicator: false,
-    })), { children: (React.createElement(React.Fragment, null,
-            validChildren.map((child, index) => {
-                return React.cloneElement(child, {
-                    onPress: () => onChange(index),
-                    onLayout: (event) => {
-                        var _a;
-                        const { width } = event.nativeEvent.layout;
-                        const previousItemPosition = ((_a = tabItemPositions.current[index - 1]) === null || _a === void 0 ? void 0 : _a.position) || 0;
-                        tabItemPositions.current[index] = {
-                            position: previousItemPosition + width,
-                            width,
-                        };
-                    },
-                    active: index === value,
-                    variant,
-                    _parentProps: {
-                        dense,
-                        iconPosition,
-                        buttonStyle,
-                        containerStyle,
-                        titleStyle,
-                    },
-                });
-            }),
-            !disableIndicator && (React.createElement(Animated.View, { style: [
-                    styles.indicator,
-                    {
-                        backgroundColor: (_c = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _c === void 0 ? void 0 : _c.secondary,
-                        transform: [
-                            {
-                                translateX: indicatorTransitionInterpolate,
-                            },
-                        ],
-                        width: WIDTH,
-                    },
-                    indicatorStyle,
-                ] })))) }))));
+        ]} onLayout={({ nativeEvent: { layout } }) => setDim(Object(layout))}>
+        {React.Children.map(children, (child, index) => {
+            return React.cloneElement(child, {
+                onPress: () => onChange(index),
+                active: index === value,
+                variant,
+            });
+        })}
+        {!disableIndicator && (<Animated.View style={[
+                styles.indicator,
+                {
+                    backgroundColor: (_c = theme === null || theme === void 0 ? void 0 : theme.colors) === null || _c === void 0 ? void 0 : _c.secondary,
+                    transform: [
+                        {
+                            translateX: animation.interpolate({
+                                inputRange: [0, 1],
+                                outputRange: [0, WIDTH],
+                            }),
+                        },
+                    ],
+                },
+                indicatorStyle,
+            ]}>
+            <View style={{ width: WIDTH }}/>
+          </Animated.View>)}
+      </View>
+    </>);
 };
+const Tab = Object.assign(TabContainer, {
+    Item: TabItem,
+});
+export { Tab };
+export default Object.assign(withTheme(TabContainer, 'Tab'), {
+    Item: withTheme(TabItem, 'TabItem'),
+});
 const styles = StyleSheet.create({
+    buttonStyle: {
+        borderRadius: 0,
+        backgroundColor: 'transparent',
+    },
+    titleStyle: {
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        textTransform: 'uppercase',
+    },
+    containerStyle: {
+        flex: 1,
+        borderRadius: 0,
+    },
     viewStyle: {
         flexDirection: 'row',
         position: 'relative',
@@ -139,4 +113,3 @@ const styles = StyleSheet.create({
         bottom: 0,
     },
 });
-TabBase.displayName = 'Tab';
