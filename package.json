@@ -1,6 +1,6 @@
 {
   "name": "react-native-elements-light",
-  "version": "4.0.0-light",
+  "version": "4.0.1-light",
   "description": "Cross Platform React Native UI Toolkit",
   "main": "dist/index.js",
   "prepublish": "tsc --composite false",
