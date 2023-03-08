@@ -11,6 +11,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 };
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View, Platform, Text, } from 'react-native';
+import CheckBoxIcon from './CheckBoxIcon';
 import { fonts, withTheme } from '../config';
 const CheckBox = (props) => {
     var _a, _b;
@@ -30,7 +31,7 @@ const CheckBox = (props) => {
             center && { justifyContent: 'center' },
             wrapperStyle && wrapperStyle,
         ])}>
-            {!iconRight && <></>}
+            {!iconRight && <CheckBoxIcon {...props} checkedColor={checkedColor} />}
 
             {React.isValidElement(title)
                 ? title
@@ -48,7 +49,7 @@ const CheckBox = (props) => {
                     {checked ? checkedTitle || title : title}
                 </Text>)}
 
-            {iconRight && <></>}
+            {iconRight && <CheckBoxIcon {...props} checkedColor={checkedColor} />}
         </View>
     </Component>);
 };
